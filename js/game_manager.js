@@ -9,7 +9,7 @@ function GameManager(size, InputManager, Actuator) {
   this.inputManager.on("restart", this.restart.bind(this));
 
   this.inputManager.on('think', function() {
-    var best = this.ai.getBest();
+    var best = selectBestMove(this.grid);
     this.actuator.showHint(best.move);
   }.bind(this));
 
@@ -40,8 +40,6 @@ GameManager.prototype.restart = function () {
 GameManager.prototype.setup = function () {
   this.grid         = new Grid(this.size);
   this.grid.addStartTiles();
-
-  this.ai           = new AI(this.grid);
 
   this.score        = 0;
   this.over         = false;
@@ -85,7 +83,7 @@ GameManager.prototype.move = function(direction) {
 
 // moves continuously until game is over
 GameManager.prototype.run = function() {
-  var best = this.ai.getBest();
+  var best = selectBestMove(this.grid);
   this.move(best.move);
   var timeout = animationDelay;
   if (this.running && !this.over && !this.won) {
